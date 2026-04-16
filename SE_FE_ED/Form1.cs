@@ -22,54 +22,76 @@ namespace SE_FE_ED
             InitializeComponent();
             //Aquí empieza la configuración del chart
             serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double> { temperatura }, Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#418993FF") };
-            chTemp.AxisX.Add(new Axis{Title = "Tiempo (s)", MinValue = 0});
+            chTemp.AxisX.Add(new Axis{Title = "Tiempo (s)", MinValue = 0, MaxValue = 30});
             chTemp.AxisY.Add(new Axis{Title = "Temperatura (°C)", MinValue = 0, MaxValue = 100});
             chTemp.Series = new SeriesCollection
             {
                 serTemp
             };
 
-            //Aquí empieza la configuración de la barra tipo 'Speedtest' pq la configuración desde el menú de propiedades está bugueada y no se guarda ningún cambio, y yo no sé pq
+            //Aquí empieza la configuración de las barras tipo 'Speedtest' pq la configuración desde el menú de propiedades está bugueada y no se guarda ningún cambio, y yo no sé pq
             gauTemp.From = 0;
             gauTemp.To = 100;
             gauTemp.FromColor = (System.Windows.Media.Color)new System.Windows.Media.ColorConverter().ConvertFrom("#FFAEDAFF");
             gauTemp.ToColor = (System.Windows.Media.Color)new System.Windows.Media.ColorConverter().ConvertFrom("#FF8993FF");
             gauTemp.ForeGround = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#FFF6F6F6");
-        }
-        double temperatura = 0;
-        int tempMin = 0, tempMax = 0;
-        string tem;
+            gauPredict.From = 0;
+            gauPredict.To = 100;
+            gauPredict.FromColor = (System.Windows.Media.Color)new System.Windows.Media.ColorConverter().ConvertFrom("#FFF6F6F6");
+            gauPredict.ToColor = (System.Windows.Media.Color)new System.Windows.Media.ColorConverter().ConvertFrom("#FFAEDAFF");
+            gauPredict.ForeGround = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#FFF6F6F6");
 
-        private void button1_Click(object sender, EventArgs e)
+            //Configuración del timer
+            contador.Interval = 1000;
+            contador.Start();
+        }
+        double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0;
+
+        int segundos = 0, minutos = 0, horas = 0; 
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            ActualizaciónDatos();
+            segundos++;
+            if (segundos >= 60)
+            {
+                segundos = 0;
+                minutos++;
+            }
+            
+            if(minutos >= 60)
+            {
+                minutos = 0;
+                horas++;
+            }
+
+            lblContador.Text = $"{horas}h | {minutos}m | {segundos}s";
         }
 
         private void ActualizaciónDatos()
         {
-            temperatura = double.Parse(textBox1.Text);
+            temperatura = 0; // MODIFICAR EL ORIGEN AQUÍ;
+            tempPredict = 0; // MODIFICAR EL PREDICT AQUÍ
             gauTemp.Value = temperatura;
+            gauPredict.Value = tempPredict;
             serTemp.Values.Add(temperatura);
-            if (serTemp.Values.Count > 30)
+            if (serTemp.Values.Count > 31)
             {
                 serTemp.Values.RemoveAt(0);
             }
-            tem = Convert.ToString(Math.Round(temperatura));
 
             if (tempMin == 0 || serTemp.Values.Count < 1)
             {
-                tempMin = int.Parse(tem);
+                tempMin = temperatura;
                 lblMínima.Text = Convert.ToString(tempMin);
             }
             else if (temperatura < tempMin)
             {
-                tempMin = int.Parse(tem);
+                tempMin = temperatura;
                 lblMínima.Text = Convert.ToString(tempMin);
             }
 
             if (temperatura > tempMax)
             {
-                tempMax = int.Parse(tem);
+                tempMax = temperatura;
                 lblMáxima.Text = Convert.ToString(tempMax);
             }
 
