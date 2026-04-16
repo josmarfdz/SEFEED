@@ -56,7 +56,7 @@
             // 
             // gauTemp
             // 
-            this.gauTemp.Location = new System.Drawing.Point(55, 34);
+            this.gauTemp.Location = new System.Drawing.Point(55, 20);
             this.gauTemp.Name = "gauTemp";
             this.gauTemp.Size = new System.Drawing.Size(225, 168);
             this.gauTemp.TabIndex = 1;
