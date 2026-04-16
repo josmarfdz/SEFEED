@@ -17,17 +17,16 @@ namespace SE_FE_ED
     public partial class Form1 : Form
     {
         LineSeries serTemp;
+        LineSeries tempTeórica;
         public Form1()
         {
             InitializeComponent();
             //Aquí empieza la configuración del chart
-            serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double> { temperatura }, Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#418993FF") };
+            serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#8993FF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#41AEDAFF") };
             chTemp.AxisX.Add(new Axis{Title = "Tiempo (s)", MinValue = 0, MaxValue = 30});
             chTemp.AxisY.Add(new Axis{Title = "Temperatura (°C)", MinValue = 0, MaxValue = 100});
-            chTemp.Series = new SeriesCollection
-            {
-                serTemp
-            };
+            tempTeórica = new LineSeries {Title = "Temperatura teórica", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#31F6F6F6") };
+            chTemp.Series = new SeriesCollection { tempTeórica, serTemp };
 
             //Aquí empieza la configuración de las barras tipo 'Speedtest' pq la configuración desde el menú de propiedades está bugueada y no se guarda ningún cambio, y yo no sé pq
             gauTemp.From = 0;
@@ -68,14 +67,14 @@ namespace SE_FE_ED
 
         private void ActualizaciónDatos()
         {
-            temperatura = 0; // MODIFICAR EL ORIGEN AQUÍ;
-            tempPredict = 0; // MODIFICAR EL PREDICT AQUÍ
             gauTemp.Value = temperatura;
             gauPredict.Value = tempPredict;
             serTemp.Values.Add(temperatura);
+            tempTeórica.Values.Add(tempPredict);
             if (serTemp.Values.Count > 31)
             {
                 serTemp.Values.RemoveAt(0);
+                tempTeórica.Values.RemoveAt(0);
             }
 
             if (tempMin == 0 || serTemp.Values.Count < 1)
