@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.chTemp = new LiveCharts.WinForms.CartesianChart();
             this.gauTemp = new LiveCharts.WinForms.SolidGauge();
             this.lblTemp = new System.Windows.Forms.Label();
@@ -40,10 +41,14 @@
             this.lblEstadoTitle = new System.Windows.Forms.Label();
             this.gauPredict = new LiveCharts.WinForms.SolidGauge();
             this.lblEstado = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblPred = new System.Windows.Forms.Label();
             this.lblContador = new System.Windows.Forms.Label();
             this.lblTiempoTitle = new System.Windows.Forms.Label();
             this.contador = new System.Windows.Forms.Timer(this.components);
+            this.label2 = new System.Windows.Forms.Label();
+            this.lblTemAmb = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // chTemp
@@ -160,22 +165,22 @@
             this.lblEstado.Text = "Sin datos";
             this.lblEstado.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // label1
+            // lblPred
             // 
-            this.label1.Font = new System.Drawing.Font("Poppins SemiBold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.label1.Location = new System.Drawing.Point(55, 197);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(225, 23);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "Temperatura predecida (C°)";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblPred.Font = new System.Drawing.Font("Poppins SemiBold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblPred.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.lblPred.Location = new System.Drawing.Point(55, 197);
+            this.lblPred.Name = "lblPred";
+            this.lblPred.Size = new System.Drawing.Size(225, 23);
+            this.lblPred.TabIndex = 13;
+            this.lblPred.Text = "Pred. Temp. en [c] segundos";
+            this.lblPred.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // lblContador
             // 
             this.lblContador.Font = new System.Drawing.Font("Poppins Medium", 15F);
             this.lblContador.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.lblContador.Location = new System.Drawing.Point(687, 291);
+            this.lblContador.Location = new System.Drawing.Point(433, 655);
             this.lblContador.Name = "lblContador";
             this.lblContador.Size = new System.Drawing.Size(202, 44);
             this.lblContador.TabIndex = 15;
@@ -186,7 +191,7 @@
             // 
             this.lblTiempoTitle.Font = new System.Drawing.Font("Poppins SemiBold", 15F);
             this.lblTiempoTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.lblTiempoTitle.Location = new System.Drawing.Point(714, 251);
+            this.lblTiempoTitle.Location = new System.Drawing.Point(310, 655);
             this.lblTiempoTitle.Name = "lblTiempoTitle";
             this.lblTiempoTitle.Size = new System.Drawing.Size(146, 44);
             this.lblTiempoTitle.TabIndex = 14;
@@ -197,15 +202,50 @@
             // 
             this.contador.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Poppins SemiBold", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.label2.Location = new System.Drawing.Point(695, 251);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(191, 23);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Temp Ambiental (C°)";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // lblTemAmb
+            // 
+            this.lblTemAmb.BackColor = System.Drawing.Color.Transparent;
+            this.lblTemAmb.Font = new System.Drawing.Font("Poppins", 30F, System.Drawing.FontStyle.Bold);
+            this.lblTemAmb.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.lblTemAmb.Location = new System.Drawing.Point(690, 263);
+            this.lblTemAmb.Name = "lblTemAmb";
+            this.lblTemAmb.Size = new System.Drawing.Size(206, 68);
+            this.lblTemAmb.TabIndex = 19;
+            this.lblTemAmb.Text = "00.00";
+            this.lblTemAmb.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(56, 576);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(827, 132);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 20;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(42)))), ((int)(((byte)(68)))));
-            this.ClientSize = new System.Drawing.Size(911, 645);
+            this.ClientSize = new System.Drawing.Size(911, 716);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.lblTemAmb);
             this.Controls.Add(this.lblContador);
             this.Controls.Add(this.lblTiempoTitle);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblPred);
             this.Controls.Add(this.gauPredict);
             this.Controls.Add(this.lblEstado);
             this.Controls.Add(this.lblEstadoTitle);
@@ -217,8 +257,10 @@
             this.Controls.Add(this.chTemp);
             this.Controls.Add(this.lblMínima);
             this.Controls.Add(this.lblMáxima);
+            this.Controls.Add(this.pictureBox1);
             this.Name = "Form1";
             this.Text = "Sistema de monitoreo de temperatura";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -236,10 +278,13 @@
         private System.Windows.Forms.Label lblEstadoTitle;
         private LiveCharts.WinForms.SolidGauge gauPredict;
         private System.Windows.Forms.Label lblEstado;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblPred;
         private System.Windows.Forms.Label lblContador;
         private System.Windows.Forms.Label lblTiempoTitle;
         private System.Windows.Forms.Timer contador;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lblTemAmb;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 

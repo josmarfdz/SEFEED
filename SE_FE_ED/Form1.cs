@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Ink;
 using System.Xml;
 
 namespace SE_FE_ED
@@ -18,15 +19,17 @@ namespace SE_FE_ED
     {
         LineSeries serTemp;
         LineSeries tempTeórica;
+        LineSeries tempAmbiental;
         public Form1()
         {
             InitializeComponent();
             //Aquí empieza la configuración del chart
-            serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#8993FF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#41AEDAFF") };
-            chTemp.AxisX.Add(new Axis{Title = "Tiempo (s)", MinValue = 0, MaxValue = 30});
+            serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#8993FF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#41AEDAFF"), PointGeometrySize = 0 };
             chTemp.AxisY.Add(new Axis{Title = "Temperatura (°C)", MinValue = 0, MaxValue = 100});
-            tempTeórica = new LineSeries {Title = "Temperatura teórica", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#31F6F6F6") };
-            chTemp.Series = new SeriesCollection { tempTeórica, serTemp };
+            chTemp.AxisX.Add(new Axis { Title = "Tiempo (s)", MinValue = 0 /*, MaxValue = 30*/ });
+            tempTeórica = new LineSeries {Title = "Temperatura teórica", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#31F6F6F6"), PointGeometrySize = 0 };
+            tempAmbiental = new LineSeries { Title = "Temperatura ambiental", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#559AFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#311F2A44"), PointGeometrySize = 0};
+            chTemp.Series = new SeriesCollection { serTemp, tempTeórica, tempAmbiental };
 
             //Aquí empieza la configuración de las barras tipo 'Speedtest' pq la configuración desde el menú de propiedades está bugueada y no se guarda ningún cambio, y yo no sé pq
             gauTemp.From = 0;
@@ -44,11 +47,13 @@ namespace SE_FE_ED
             contador.Interval = 1000;
             contador.Start();
         }
-        double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0;
+        double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0, tempAmb = 0;
 
-        int segundos = 0, minutos = 0, horas = 0; 
+        int segundos = -1, minutos = 0, horas = 0; 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            //chTemp.AxisX[0].MaxValue = segundos + 2; <- PROBAR CON EL SENSOR CONECTADO
+
             segundos++;
             if (segundos >= 60)
             {
@@ -67,15 +72,10 @@ namespace SE_FE_ED
 
         private void ActualizaciónDatos()
         {
-            gauTemp.Value = temperatura;
-            gauPredict.Value = tempPredict;
-            serTemp.Values.Insert(0,temperatura);
-            tempTeórica.Values.Insert(0, tempPredict);
-            if (serTemp.Values.Count > 31)
-            {
-                serTemp.Values.RemoveAt(31);
-                tempTeórica.Values.RemoveAt(31);
-            }
+            serTemp.Values.Add(temperatura);
+            tempTeórica.Values.Add(tempPredict);
+            tempAmbiental.Values.Add(tempAmb);
+            lblTemAmb.Text = Convert.ToString(tempAmb);
 
             if (tempMin == 0 || serTemp.Values.Count < 1)
             {
