@@ -69,12 +69,12 @@ namespace SE_FE_ED
         {
             gauTemp.Value = temperatura;
             gauPredict.Value = tempPredict;
-            serTemp.Values.Add(temperatura);
-            tempTeórica.Values.Add(tempPredict);
+            serTemp.Values.Insert(0,temperatura);
+            tempTeórica.Values.Insert(0, tempPredict);
             if (serTemp.Values.Count > 31)
             {
-                serTemp.Values.RemoveAt(0);
-                tempTeórica.Values.RemoveAt(0);
+                serTemp.Values.RemoveAt(31);
+                tempTeórica.Values.RemoveAt(31);
             }
 
             if (tempMin == 0 || serTemp.Values.Count < 1)
