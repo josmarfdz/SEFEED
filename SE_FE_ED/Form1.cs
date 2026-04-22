@@ -46,8 +46,70 @@ namespace SE_FE_ED
             //Configuración del timer
             contador.Interval = 1000;
             contador.Start();
+            timerPanel.Interval = 15;
+            timerPanel.Start();
         }
         double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0, tempAmb = 0;
+        decimal porcentajeActual=0, porcentajeObjetivo=0, temporal;
+
+        private void timerPanel_Tick(object sender, EventArgs e)
+        {
+            if (porcentajeObjetivo >= 100)
+                porcentajeObjetivo = 100;
+            else if (porcentajeObjetivo <= 0)
+                porcentajeObjetivo = 0;
+
+            lblPotencia.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            porcentajeActual += (porcentajeObjetivo - porcentajeActual) / 5;
+            porcentajeObjetivo = Math.Round(porcentajeObjetivo,2, MidpointRounding.AwayFromZero);
+            temporal = Math.Round(porcentajeActual, 2, MidpointRounding.AwayFromZero);
+            lblPotencia.Text = $"{temporal}%";
+
+            if (Math.Abs(porcentajeActual - porcentajeObjetivo) < 1)
+            {
+                porcentajeActual = porcentajeObjetivo;
+                lblPotencia.Text = $"{porcentajeActual}%";
+                timerPanel.Stop();
+            }
+            plPotencia.Invalidate();
+            lblPotencia.Paint += lblPotencia_Paint;
+            lblPotencia.Invalidate();
+        }
+
+        private void PanelFan_Paint(object sender, PaintEventArgs e)
+        {
+            using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(plPotencia.ClientRectangle, Color.FromArgb(174, 218, 255), Color.FromArgb(137, 147, 255), 0f))   // color final
+            {
+                int ancho = (int)(plPotencia.Width * porcentajeActual / 100);
+
+                e.Graphics.FillRectangle(brush, 0, 0, ancho, plPotencia.Height);
+            }
+        }
+
+        private void lblPotencia_Paint(object sender, PaintEventArgs e)
+        {
+            e.Graphics.Clear(lblPotencia.BackColor);
+
+            var colores = ObtenerColores(porcentajeActual);
+
+            using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(lblPotencia.ClientRectangle, colores.inicio, colores.fin,0f))
+            {
+                using (var formato = new StringFormat()
+                {
+                    Alignment = StringAlignment.Center,
+                    LineAlignment = StringAlignment.Center
+                })
+                {
+                    e.Graphics.DrawString(
+                        lblPotencia.Text,
+                        lblPotencia.Font,
+                        brush,
+                        lblPotencia.ClientRectangle,
+                        formato
+                    );
+                }
+            }
+        }
 
         int segundos = -1, minutos = 0, horas = 0; 
         private void timer1_Tick(object sender, EventArgs e)
@@ -68,6 +130,20 @@ namespace SE_FE_ED
             }
 
             lblContador.Text = $"{horas}h | {minutos}m | {segundos}s";
+        }
+
+        private (Color inicio, Color fin) ObtenerColores(decimal porcentaje)
+        {
+            if (porcentaje < 30)
+                return (Color.FromArgb(246, 246, 246), Color.FromArgb(174, 218, 255));
+
+            if (porcentaje < 60)
+                return (Color.FromArgb(174, 218, 255), Color.FromArgb(85, 154, 255));
+
+            if (porcentaje < 85)
+                return (Color.FromArgb(85, 154, 255), Color.FromArgb(137, 147, 255));
+
+            return (Color.FromArgb(137, 147, 255), Color.FromArgb(137, 147, 255));
         }
 
         private void ActualizaciónDatos()

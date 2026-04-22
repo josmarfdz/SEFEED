@@ -48,6 +48,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.lblTemAmb = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.plPotencia = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lblPotencia = new System.Windows.Forms.Label();
+            this.timerPanel = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -180,7 +184,7 @@
             // 
             this.lblContador.Font = new System.Drawing.Font("Poppins Medium", 15F);
             this.lblContador.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.lblContador.Location = new System.Drawing.Point(433, 655);
+            this.lblContador.Location = new System.Drawing.Point(433, 668);
             this.lblContador.Name = "lblContador";
             this.lblContador.Size = new System.Drawing.Size(202, 44);
             this.lblContador.TabIndex = 15;
@@ -191,7 +195,7 @@
             // 
             this.lblTiempoTitle.Font = new System.Drawing.Font("Poppins SemiBold", 15F);
             this.lblTiempoTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
-            this.lblTiempoTitle.Location = new System.Drawing.Point(310, 655);
+            this.lblTiempoTitle.Location = new System.Drawing.Point(310, 668);
             this.lblTiempoTitle.Name = "lblTiempoTitle";
             this.lblTiempoTitle.Size = new System.Drawing.Size(146, 44);
             this.lblTiempoTitle.TabIndex = 14;
@@ -228,19 +232,55 @@
             // pictureBox1
             // 
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(56, 576);
+            this.pictureBox1.Location = new System.Drawing.Point(50, 576);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(827, 132);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 20;
             this.pictureBox1.TabStop = false;
             // 
+            // plPotencia
+            // 
+            this.plPotencia.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(42)))), ((int)(((byte)(68)))));
+            this.plPotencia.Location = new System.Drawing.Point(59, 753);
+            this.plPotencia.Name = "plPotencia";
+            this.plPotencia.Size = new System.Drawing.Size(801, 17);
+            this.plPotencia.TabIndex = 21;
+            this.plPotencia.Paint += new System.Windows.Forms.PaintEventHandler(this.PanelFan_Paint);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Poppins Medium", 10F);
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.label1.Location = new System.Drawing.Point(56, 725);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(212, 30);
+            this.label1.TabIndex = 22;
+            this.label1.Text = "Potencia del ventilador:";
+            // 
+            // lblPotencia
+            // 
+            this.lblPotencia.Font = new System.Drawing.Font("Poppins", 17F, System.Drawing.FontStyle.Bold);
+            this.lblPotencia.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(246)))), ((int)(((byte)(246)))), ((int)(((byte)(246)))));
+            this.lblPotencia.Location = new System.Drawing.Point(722, 711);
+            this.lblPotencia.Name = "lblPotencia";
+            this.lblPotencia.Size = new System.Drawing.Size(138, 39);
+            this.lblPotencia.TabIndex = 23;
+            this.lblPotencia.Text = "00.00%";
+            this.lblPotencia.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // timerPanel
+            // 
+            this.timerPanel.Tick += new System.EventHandler(this.timerPanel_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(42)))), ((int)(((byte)(68)))));
-            this.ClientSize = new System.Drawing.Size(911, 716);
+            this.ClientSize = new System.Drawing.Size(911, 798);
+            this.Controls.Add(this.plPotencia);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblTemAmb);
             this.Controls.Add(this.lblContador);
@@ -258,10 +298,13 @@
             this.Controls.Add(this.lblMínima);
             this.Controls.Add(this.lblMáxima);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblPotencia);
             this.Name = "Form1";
             this.Text = "Sistema de monitoreo de temperatura";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -285,6 +328,10 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label lblTemAmb;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Panel plPotencia;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblPotencia;
+        private System.Windows.Forms.Timer timerPanel;
     }
 }
 
