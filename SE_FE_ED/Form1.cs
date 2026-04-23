@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,15 +21,16 @@ namespace SE_FE_ED
         LineSeries serTemp;
         LineSeries tempTeórica;
         LineSeries tempAmbiental;
+        System.IO.Ports.SerialPort Arduino;
         public Form1()
         {
             InitializeComponent();
             //Aquí empieza la configuración del chart
             serTemp = new LineSeries { Title = "Temperatura (C°)", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#8993FF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFromString("#41AEDAFF"), PointGeometrySize = 0 };
-            chTemp.AxisY.Add(new Axis{Title = "Temperatura (°C)", MinValue = 0, MaxValue = 100});
+            chTemp.AxisY.Add(new Axis { Title = "Temperatura (°C)", MinValue = 0, MaxValue = 100 });
             chTemp.AxisX.Add(new Axis { Title = "Tiempo (s)", MinValue = 0 /*, MaxValue = 30*/ });
-            tempTeórica = new LineSeries {Title = "Temperatura teórica", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#31F6F6F6"), PointGeometrySize = 0 };
-            tempAmbiental = new LineSeries { Title = "Temperatura ambiental", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#559AFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#311F2A44"), PointGeometrySize = 0};
+            tempTeórica = new LineSeries { Title = "Temperatura teórica", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#AEDAFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#31F6F6F6"), PointGeometrySize = 0 };
+            tempAmbiental = new LineSeries { Title = "Temperatura ambiental", Values = new ChartValues<double>(), Stroke = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#559AFF"), Fill = (System.Windows.Media.Brush)new System.Windows.Media.BrushConverter().ConvertFrom("#311F2A44"), PointGeometrySize = 0 };
             chTemp.Series = new SeriesCollection { serTemp, tempTeórica, tempAmbiental };
 
             //Aquí empieza la configuración de las barras tipo 'Speedtest' pq la configuración desde el menú de propiedades está bugueada y no se guarda ningún cambio, y yo no sé pq
@@ -48,9 +50,53 @@ namespace SE_FE_ED
             contador.Start();
             timerPanel.Interval = 15;
             timerPanel.Start();
+
+            Arduino = new System.IO.Ports.SerialPort();
+            Arduino.PortName = "COM5";
+            Arduino.BaudRate = 9600;
+            Arduino.Open();
+
+            Arduino.DataReceived += SerialPort_DataReceived;
         }
         double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0, tempAmb = 0;
-        decimal porcentajeActual=0, porcentajeObjetivo=0, temporal;
+        decimal porcentajeActual = 0, porcentajeObjetivo = 0, temporal;
+
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                string data = Arduino.ReadLine();
+                string[] valores = data.Split(',');
+
+                if (valores.Length >= 3)
+                {
+                    string tempActual = valores[1];
+                    string tempPredecida = valores[2];
+
+                    this.Invoke(new Action(() =>
+                    {
+                        // Convertir correctamente el string a double
+                        if (double.TryParse(tempActual, out double temp))
+                        {
+                            temperatura = temp;
+                        }
+
+                        if (double.TryParse(tempPredecida, out double tempPred))
+                        {
+                            tempPredict = tempPred;
+                        }
+
+                        // ¡IMPORTANTE! Llamar al método que actualiza la UI
+                        ActualizaciónDatos();
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                // Considera loggear el error para debugging
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
 
         private void timerPanel_Tick(object sender, EventArgs e)
         {
@@ -61,7 +107,7 @@ namespace SE_FE_ED
 
             lblPotencia.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             porcentajeActual += (porcentajeObjetivo - porcentajeActual) / 5;
-            porcentajeObjetivo = Math.Round(porcentajeObjetivo,2, MidpointRounding.AwayFromZero);
+            porcentajeObjetivo = Math.Round(porcentajeObjetivo, 2, MidpointRounding.AwayFromZero);
             temporal = Math.Round(porcentajeActual, 2, MidpointRounding.AwayFromZero);
             lblPotencia.Text = $"{temporal}%";
 
@@ -92,7 +138,7 @@ namespace SE_FE_ED
 
             var colores = ObtenerColores(porcentajeActual);
 
-            using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(lblPotencia.ClientRectangle, colores.inicio, colores.fin,0f))
+            using (var brush = new System.Drawing.Drawing2D.LinearGradientBrush(lblPotencia.ClientRectangle, colores.inicio, colores.fin, 0f))
             {
                 using (var formato = new StringFormat()
                 {
@@ -111,7 +157,7 @@ namespace SE_FE_ED
             }
         }
 
-        int segundos = -1, minutos = 0, horas = 0; 
+        int segundos = -1, minutos = 0, horas = 0;
         private void timer1_Tick(object sender, EventArgs e)
         {
             //chTemp.AxisX[0].MaxValue = segundos + 2; <- PROBAR CON EL SENSOR CONECTADO
@@ -122,8 +168,8 @@ namespace SE_FE_ED
                 segundos = 0;
                 minutos++;
             }
-            
-            if(minutos >= 60)
+
+            if (minutos >= 60)
             {
                 minutos = 0;
                 horas++;
@@ -152,6 +198,8 @@ namespace SE_FE_ED
             tempTeórica.Values.Add(tempPredict);
             tempAmbiental.Values.Add(tempAmb);
             lblTemAmb.Text = Convert.ToString(tempAmb);
+            gauTemp.Value = temperatura;
+            gauPredict.Value = tempPredict;
 
             if (tempMin == 0 || serTemp.Values.Count < 1)
             {
@@ -170,17 +218,17 @@ namespace SE_FE_ED
                 lblMáxima.Text = Convert.ToString(tempMax);
             }
 
-            if(temperatura <= 45)
+            if (temperatura <= 45)
             {
                 lblEstado.Text = "Bajo";
                 lblEstado.ForeColor = Color.FromArgb(0, 246, 246, 246);
             }
-            else if(temperatura >= 46 && temperatura <= 70)
+            else if (temperatura >= 46 && temperatura <= 70)
             {
                 lblEstado.Text = "Normal";
                 lblEstado.ForeColor = Color.FromArgb(0, 174, 218, 255);
             }
-            else if(temperatura >= 71 && temperatura <= 84)
+            else if (temperatura >= 71 && temperatura <= 84)
             {
                 lblEstado.Text = "Alto";
                 lblEstado.ForeColor = Color.FromArgb(0, 85, 154, 255);
