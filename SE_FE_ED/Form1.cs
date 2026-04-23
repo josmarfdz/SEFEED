@@ -56,6 +56,8 @@ namespace SE_FE_ED
             Arduino.BaudRate = 9600;
             Arduino.Open();
 
+            //HOLA JOSMAR TE AMO
+
             Arduino.DataReceived += SerialPort_DataReceived;
         }
         double temperatura = 0, tempPredict = 0, tempMin = 0, tempMax = 0, tempAmb = 0;
