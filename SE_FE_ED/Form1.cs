@@ -74,6 +74,7 @@ namespace SE_FE_ED
                 {
                     string tempActual = valores[1];
                     string tempPredecida = valores[2];
+                    string temAmbiente = valores[3];
 
                     this.Invoke(new Action(() =>
                     {
@@ -86,6 +87,11 @@ namespace SE_FE_ED
                         if (double.TryParse(tempPredecida, out double tempPred))
                         {
                             tempPredict = tempPred;
+                        }
+
+                        if (double.TryParse(temAmbiente, out double temAmbi))
+                        {
+                            tempAmb = temAmbi;
                         }
 
                         // ¡IMPORTANTE! Llamar al método que actualiza la UI
